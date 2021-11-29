@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1252d37ab73af5c41b86c3716d59c310, type: 3}
+  m_Name: TestMagicCard2
+  m_EditorClassIdentifier: 
+  cardName: "\u9B54\u6CD5\u53612"
+  introduction: "\u6D4B\u8BD5\u9B54\u6CD5\u5361\u5475\u5475"
+  sp: {fileID: 0}
+  cost: 5
+  damage: 3
+  magicCardPrefab: {fileID: 0}
