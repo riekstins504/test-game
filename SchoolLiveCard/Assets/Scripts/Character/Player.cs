@@ -54,7 +54,7 @@ public class Player : MonoBehaviour,IDamagable
     {
         currentHp = Math.Max(0, currentHp - damageValue);
         Debug.Log($"Player hp: {currentHp}");
-        HpInfo hpInfo = new HpInfo(currentHp, maxHp);
+        ValueBarInfo hpInfo = new ValueBarInfo(currentHp, maxHp);
         EventCenter.GetInstance().EventTrigger("PlayerTakenDamage",hpInfo);
         if (currentHp <= 0)
         {
