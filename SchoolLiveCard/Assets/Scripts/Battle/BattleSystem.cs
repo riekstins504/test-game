@@ -89,6 +89,9 @@ public class BattleSystem : MonoBehaviour
     {
         Debug.Log("Player Turn");
         
+        //检测手牌是否大于3，如果大于，要求丢弃一定的牌
+        
+        
         
         //抽牌
         for (int i = 0; i < 5; i++)
