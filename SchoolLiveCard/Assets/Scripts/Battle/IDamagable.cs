@@ -14,3 +14,4 @@ public interface IDamagable
 {
     bool TakeDamage(int damageValue);
 }
+    

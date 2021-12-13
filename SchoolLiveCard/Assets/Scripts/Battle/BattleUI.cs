@@ -30,6 +30,7 @@ public class BattleUI : MonoBehaviour
     [Header("Player HUD")] 
     public ValueBarUI playerHpBar;
     public ValueBarUI playerMagicBar;
+    public FoldPanelUI foldPanel;
 
     private void Awake()
     {

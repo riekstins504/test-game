@@ -1,35 +1,47 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerHandUI : MonoBehaviour
 {
-    private List<GameObject> cards;
+    //private List<GameObject> cards;
     public Transform leftPoint;
     public Transform rightPoint;
 
     
-    public void AddCard(GameObject card)
-    {
-        card.transform.SetParent(this.transform);
-        if (cards == null)
-        {
-            cards = new List<GameObject>();
-        }
-        cards.Add(card);
-        UpdateHandUI();
-    }
+    // public void AddCard(GameObject card)
+    // {
+    //     card.transform.SetParent(this.transform);
+    //     if (cards == null)
+    //     {
+    //         cards = new List<GameObject>();
+    //     }
+    //     cards.Add(card);
+    //     UpdateHandUI();
+    // }
+    //
+    // public void RemoveCard(GameObject card)
+    // {
+    //     cards.Remove(card);
+    //     UpdateHandUI();
+    // }
 
-    public void RemoveCard(GameObject card)
+    private void Start()
     {
-        cards.Remove(card);
-        UpdateHandUI();
+        EventCenter.GetInstance().AddEventListener("PlayerDrawCard", UpdateHandUI);
+        EventCenter.GetInstance().AddEventListener("PlayerPlayCard", UpdateHandUI);
     }
 
     private void UpdateHandUI()
     {
-        int count = cards.Count;
+        List<GameObject> cards = BattleSystem.Instance.Player.handsCard;
+        // foreach (GameObject card in cards)
+        // {
+        //     card.transform.SetParent(transform);
+        // }
 
+        int count = cards.Count;
         if (count == 1)
         {
             Vector3 distance = rightPoint.position - leftPoint.position;
@@ -46,6 +58,7 @@ public class PlayerHandUI : MonoBehaviour
                 cards[i].transform.localScale = Vector3.one;
             }
         }
-
     }
+    
+    
 }

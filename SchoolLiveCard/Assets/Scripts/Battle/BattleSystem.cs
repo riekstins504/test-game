@@ -28,8 +28,8 @@ public class BattleSystem : MonoBehaviour
     
     public BattleUI battleUI;
     
-    private Player player;
-    private Enemy enemy;
+    public Player Player { get; private set; }
+    public Enemy Enemy { get; private set; }
     private BattleState currentState;
     private bool isPlayerEndAction = false;
     private bool isEnemyEndAction = false;
@@ -51,12 +51,7 @@ public class BattleSystem : MonoBehaviour
         }
     }
 
-
-    // public void SetCardPlayerPlay(GameObject card)
-    // {
-    //     currentPlayerCard = card;
-    // }
-
+    
 
     private void Start()
     {
@@ -69,16 +64,16 @@ public class BattleSystem : MonoBehaviour
     private IEnumerator SetupBattle()
     {
         //实例化Player和Enemy
-        player = Instantiate(playerPrefab).GetComponent<Player>();
-        enemy = Instantiate(enemyPrefab).GetComponent<Enemy>();
+        Player = Instantiate(playerPrefab).GetComponent<Player>();
+        Enemy = Instantiate(enemyPrefab).GetComponent<Enemy>();
         
-        player.LoadDataFromSO();
-        enemy.LoadDataFromSO();
+        Player.LoadDataFromSO();
+        Enemy.LoadDataFromSO();
 
         //更新UI
         //battleUI.SetEnemyUI(enemy.enemyConfig.fighterName, enemy.enemyConfig.level);
-        EventCenter.GetInstance().EventTrigger<PlayerSO>("PlayerEnterBattle", player.playerConfig);
-        EventCenter.GetInstance().EventTrigger<EnemySO>("EnemyEnterBattle", enemy.enemyConfig);
+        EventCenter.GetInstance().EventTrigger<PlayerSO>("PlayerEnterBattle", Player.playerConfig);
+        EventCenter.GetInstance().EventTrigger<EnemySO>("EnemyEnterBattle", Enemy.enemyConfig);
         
         yield return new WaitForSeconds(1f);
         currentState = BattleState.PLAYERTURN;
@@ -90,14 +85,23 @@ public class BattleSystem : MonoBehaviour
         Debug.Log("Player Turn");
         
         //检测手牌是否大于3，如果大于，要求丢弃一定的牌
-        
+        if (Player.handsCard.Count > 3)
+        {
+            FoldPanelUI.isDone = false;
+            battleUI.foldPanel.gameObject.SetActive(true);
+            while (!FoldPanelUI.isDone)
+            {
+                yield return null;//挂起
+            }
+        }
         
         
         //抽牌
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < 4; i++)
         {
             PlayerDrawCard(GenerateCard);
         }
+        
         
         //Make card dragable
         SetCardDragable(true);
@@ -140,7 +144,7 @@ public class BattleSystem : MonoBehaviour
         while(!isEnemyEndAction)//等待敌人结束回合
         {
             //敌人AI
-            if (enemy.ChooseCardToPlay())//There are not cards in enemy's hand
+            if (Enemy.ChooseCardToPlay())//There are not cards in enemy's hand
             {
                 isEnemyEndAction = true;
             }
@@ -194,31 +198,34 @@ public class BattleSystem : MonoBehaviour
 
     private void PlayerDrawCard(Func<CardSO,GameObject> generateCardFunc)
     {
-        CardSO cardData = player.DrawOneCard();
+        CardSO cardData = Player.DrawOneCard();
         GameObject cardObj = generateCardFunc(cardData);
         cardObj.AddComponent<DragableCard>().enabled = false;
-        player.handsCard.Add(cardObj);
-        battleUI.playerHand.AddCard(cardObj);
+        Player.handsCard.Add(cardObj);
+        //battleUI.playerHand.AddCard(cardObj);
+        cardObj.transform.SetParent(battleUI.playerHand.transform);
+        EventCenter.GetInstance().EventTrigger("PlayerDrawCard");
     }
 
     private void EnemyDrawCard(Func<CardSO,GameObject> generateCardFunc)
     {
-        CardSO cardData = enemy.DrawOneCard();
+        CardSO cardData = Enemy.DrawOneCard();
         GameObject cardObj = generateCardFunc(cardData);
-        enemy.handsCard.Add(cardObj);
+        Enemy.handsCard.Add(cardObj);
+        cardObj.transform.SetParent(battleUI.enemyHand.transform);
         //battleUI.enemyHand.AddCard(cardObj);
     }
 
     private void PlayerPlayCard()
     {
-        player.handsCard.Remove(currentPlayerCard);
-        battleUI.playerHand.RemoveCard(currentPlayerCard);
+        Player.handsCard.Remove(currentPlayerCard);
+        //battleUI.playerHand.RemoveCard(currentPlayerCard);
         
         switch (currentPlayerCard.tag)
         {
             case "AttackCard":
                 Debug.Log("Player打出一张AttackCard");
-                bool isEnemyDeath = currentPlayerCard.GetComponent<AttackCard>().DoAttack(enemy);
+                bool isEnemyDeath = currentPlayerCard.GetComponent<AttackCard>().DoAttack(Enemy);
                 if (isEnemyDeath)
                 {
                     currentState = BattleState.WON;
@@ -235,18 +242,19 @@ public class BattleSystem : MonoBehaviour
         
         Destroy(currentPlayerCard);
         currentPlayerCard = null;
+        EventCenter.GetInstance().EventTrigger("PlayerPlayCard");
     }
 
     private void EnemyPlayCard()
     {
-        enemy.handsCard.Remove(currentEnemyCard);
+        Enemy.handsCard.Remove(currentEnemyCard);
         //battleUI.enemyHand.RemoveCard(currentPlayerCard);
         
         switch (currentEnemyCard.tag)
         {
             case "AttackCard":
                 Debug.Log("Enemy打出一张AttackCard");
-                bool isPlayerDeath = currentEnemyCard.GetComponent<AttackCard>().DoAttack(player);
+                bool isPlayerDeath = currentEnemyCard.GetComponent<AttackCard>().DoAttack(Player);
                 if (isPlayerDeath)
                 {
                     currentState = BattleState.LOST;
@@ -268,7 +276,7 @@ public class BattleSystem : MonoBehaviour
  
     private void SetCardDragable(bool isDragable)
     {
-        foreach (var card in player.handsCard)
+        foreach (var card in Player.handsCard)
         {
             card.GetComponent<DragableCard>().enabled = isDragable;
         }
