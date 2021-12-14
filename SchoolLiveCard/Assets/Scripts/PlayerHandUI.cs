@@ -7,7 +7,6 @@ public class PlayerHandUI : MonoBehaviour
     private List<GameObject> cards;
     public Transform leftPoint;
     public Transform rightPoint;
-
     
     public void AddCard(GameObject card)
     {

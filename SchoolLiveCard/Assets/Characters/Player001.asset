@@ -23,3 +23,4 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 411f3f898d6da944590460aa670a74b1, type: 2}
   - {fileID: 11400000, guid: 82c11f437f2266c4487398c31e8354ac, type: 2}
   currentHp: 8
+  Gold: 100

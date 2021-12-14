@@ -25,14 +25,22 @@ public class BattleSystem : MonoBehaviour
     [Header("卡牌预制体")]
     public GameObject attackCardPrefab;
     public GameObject magicCardPrefab;
-    
+
     public BattleUI battleUI;
-    
+
     private Player player;
     private Enemy enemy;
     private BattleState currentState;
     private bool isPlayerEndAction = false;
     private bool isEnemyEndAction = false;
+
+    public Player GetPlayer
+    {
+        get
+        {
+            return player;
+        }
+    }
 
     private static BattleSystem _instance;
     public static BattleSystem Instance
@@ -42,7 +50,7 @@ public class BattleSystem : MonoBehaviour
 
     public static GameObject currentPlayerCard;
     public static GameObject currentEnemyCard;
-    
+
     private void Awake()
     {
         if (_instance == null)
@@ -61,7 +69,7 @@ public class BattleSystem : MonoBehaviour
     private void Start()
     {
         battleUI.endRoundBtn.onClick.AddListener(delegate { isPlayerEndAction = true; });
-        
+
         currentState = BattleState.START;
         StartCoroutine(SetupBattle());
     }
@@ -71,7 +79,7 @@ public class BattleSystem : MonoBehaviour
         //实例化Player和Enemy
         player = Instantiate(playerPrefab).GetComponent<Player>();
         enemy = Instantiate(enemyPrefab).GetComponent<Enemy>();
-        
+
         player.LoadDataFromSO();
         enemy.LoadDataFromSO();
 
@@ -79,37 +87,38 @@ public class BattleSystem : MonoBehaviour
         //battleUI.SetEnemyUI(enemy.enemyConfig.fighterName, enemy.enemyConfig.level);
         EventCenter.GetInstance().EventTrigger<PlayerSO>("PlayerEnterBattle", player.playerConfig);
         EventCenter.GetInstance().EventTrigger<EnemySO>("EnemyEnterBattle", enemy.enemyConfig);
-        
+
         yield return new WaitForSeconds(1f);
         currentState = BattleState.PLAYERTURN;
+
         StartCoroutine(PlayerTurn());
     }
 
     private IEnumerator PlayerTurn()
     {
         Debug.Log("Player Turn");
-        
-        
+
+
         //抽牌
         for (int i = 0; i < 5; i++)
         {
             PlayerDrawCard(GenerateCard);
         }
-        
+
         //Make card dragable
         SetCardDragable(true);
-        
+
         //打牌
         currentPlayerCard = null;
         isPlayerEndAction = false;
-        while(!isPlayerEndAction)//等待玩家结束回合
+        while (!isPlayerEndAction)//等待玩家结束回合
         {
             if (currentPlayerCard != null)//如果玩家打牌
             {
                 //对这张牌做一些操作
                 PlayerPlayCard();
             }
-            
+
             yield return null;
         }
 
@@ -123,8 +132,8 @@ public class BattleSystem : MonoBehaviour
     private IEnumerator EnemyTurn()
     {
         Debug.Log("Enemy Turn");
-        
-        
+
+
         //抽牌
         for (int i = 0; i < 3; i++)
         {
@@ -134,21 +143,21 @@ public class BattleSystem : MonoBehaviour
         isEnemyEndAction = false;
         currentEnemyCard = null;
         //打牌
-        while(!isEnemyEndAction)//等待敌人结束回合
+        while (!isEnemyEndAction)//等待敌人结束回合
         {
             //敌人AI
             if (enemy.ChooseCardToPlay())//There are not cards in enemy's hand
             {
                 isEnemyEndAction = true;
             }
-            
+
             if (currentEnemyCard != null)
             {
                 //对这张牌做一些操作
                 EnemyPlayCard();
             }
         }
-        
+
         yield return new WaitForSeconds(2f);
         currentState = BattleState.PLAYERTURN;
         StartCoroutine(PlayerTurn());
@@ -160,14 +169,14 @@ public class BattleSystem : MonoBehaviour
         SetCardDragable(false);
         Debug.Log("战斗结束");
     }
-    
+
     private GameObject GenerateCard(CardSO cardData)
     {
-        GameObject cardObj; 
+        GameObject cardObj;
 
         if (cardData is AttackCardSO)
         {
-            cardObj =  Instantiate(attackCardPrefab);
+            cardObj = Instantiate(attackCardPrefab);
             AttackCard card = cardObj.GetComponent<AttackCard>();
             card.AttackCardSo = cardData as AttackCardSO;
             cardObj.GetComponent<AttackCardUI>()?.UpdateUI();
@@ -189,7 +198,7 @@ public class BattleSystem : MonoBehaviour
         return cardObj;
     }
 
-    private void PlayerDrawCard(Func<CardSO,GameObject> generateCardFunc)
+    private void PlayerDrawCard(Func<CardSO, GameObject> generateCardFunc)
     {
         CardSO cardData = player.DrawOneCard();
         GameObject cardObj = generateCardFunc(cardData);
@@ -198,7 +207,7 @@ public class BattleSystem : MonoBehaviour
         battleUI.playerHand.AddCard(cardObj);
     }
 
-    private void EnemyDrawCard(Func<CardSO,GameObject> generateCardFunc)
+    private void EnemyDrawCard(Func<CardSO, GameObject> generateCardFunc)
     {
         CardSO cardData = enemy.DrawOneCard();
         GameObject cardObj = generateCardFunc(cardData);
@@ -210,7 +219,7 @@ public class BattleSystem : MonoBehaviour
     {
         player.handsCard.Remove(currentPlayerCard);
         battleUI.playerHand.RemoveCard(currentPlayerCard);
-        
+
         switch (currentPlayerCard.tag)
         {
             case "AttackCard":
@@ -229,7 +238,7 @@ public class BattleSystem : MonoBehaviour
                 Debug.LogError("Player打出的牌，类型古怪");
                 break;
         }
-        
+
         Destroy(currentPlayerCard);
         currentPlayerCard = null;
     }
@@ -238,7 +247,7 @@ public class BattleSystem : MonoBehaviour
     {
         enemy.handsCard.Remove(currentEnemyCard);
         //battleUI.enemyHand.RemoveCard(currentPlayerCard);
-        
+
         switch (currentEnemyCard.tag)
         {
             case "AttackCard":
@@ -257,12 +266,12 @@ public class BattleSystem : MonoBehaviour
                 Debug.LogError("Enemy打出的牌，类型古怪");
                 break;
         }
-        
+
         Destroy(currentEnemyCard);
         currentEnemyCard = null;
     }
 
- 
+
     private void SetCardDragable(bool isDragable)
     {
         foreach (var card in player.handsCard)
@@ -270,8 +279,8 @@ public class BattleSystem : MonoBehaviour
             card.GetComponent<DragableCard>().enabled = isDragable;
         }
     }
-        
-    
+
+
 
 
 
