@@ -25,14 +25,23 @@ public class BattleSystem : MonoBehaviour
     [Header("卡牌预制体")]
     public GameObject attackCardPrefab;
     public GameObject magicCardPrefab;
-    
+
     public BattleUI battleUI;
     
     public Player Player { get; private set; }
     public Enemy Enemy { get; private set; }
+
     private BattleState currentState;
     private bool isPlayerEndAction = false;
     private bool isEnemyEndAction = false;
+
+    public Player GetPlayer
+    {
+        get
+        {
+            return player;
+        }
+    }
 
     private static BattleSystem _instance;
     public static BattleSystem Instance
@@ -42,7 +51,7 @@ public class BattleSystem : MonoBehaviour
 
     public static GameObject currentPlayerCard;
     public static GameObject currentEnemyCard;
-    
+
     private void Awake()
     {
         if (_instance == null)
@@ -56,7 +65,7 @@ public class BattleSystem : MonoBehaviour
     private void Start()
     {
         battleUI.endRoundBtn.onClick.AddListener(delegate { isPlayerEndAction = true; });
-        
+
         currentState = BattleState.START;
         StartCoroutine(SetupBattle());
     }
@@ -64,6 +73,7 @@ public class BattleSystem : MonoBehaviour
     private IEnumerator SetupBattle()
     {
         //实例化Player和Enemy
+
         Player = Instantiate(playerPrefab).GetComponent<Player>();
         Enemy = Instantiate(enemyPrefab).GetComponent<Enemy>();
         
@@ -77,12 +87,14 @@ public class BattleSystem : MonoBehaviour
         
         yield return new WaitForSeconds(1f);
         currentState = BattleState.PLAYERTURN;
+
         StartCoroutine(PlayerTurn());
     }
 
     private IEnumerator PlayerTurn()
     {
         Debug.Log("Player Turn");
+
         
         //检测手牌是否大于3，如果大于，要求丢弃一定的牌
         if (Player.handsCard.Count > 3)
@@ -96,27 +108,30 @@ public class BattleSystem : MonoBehaviour
         }
         
         
+
         //抽牌
         for (int i = 0; i < 4; i++)
         {
             PlayerDrawCard(GenerateCard);
         }
+
         
         
+
         //Make card dragable
         SetCardDragable(true);
-        
+
         //打牌
         currentPlayerCard = null;
         isPlayerEndAction = false;
-        while(!isPlayerEndAction)//等待玩家结束回合
+        while (!isPlayerEndAction)//等待玩家结束回合
         {
             if (currentPlayerCard != null)//如果玩家打牌
             {
                 //对这张牌做一些操作
                 PlayerPlayCard();
             }
-            
+
             yield return null;
         }
 
@@ -130,8 +145,8 @@ public class BattleSystem : MonoBehaviour
     private IEnumerator EnemyTurn()
     {
         Debug.Log("Enemy Turn");
-        
-        
+
+
         //抽牌
         for (int i = 0; i < 3; i++)
         {
@@ -141,21 +156,21 @@ public class BattleSystem : MonoBehaviour
         isEnemyEndAction = false;
         currentEnemyCard = null;
         //打牌
-        while(!isEnemyEndAction)//等待敌人结束回合
+        while (!isEnemyEndAction)//等待敌人结束回合
         {
             //敌人AI
             if (Enemy.ChooseCardToPlay())//There are not cards in enemy's hand
             {
                 isEnemyEndAction = true;
             }
-            
+
             if (currentEnemyCard != null)
             {
                 //对这张牌做一些操作
                 EnemyPlayCard();
             }
         }
-        
+
         yield return new WaitForSeconds(2f);
         currentState = BattleState.PLAYERTURN;
         StartCoroutine(PlayerTurn());
@@ -167,14 +182,14 @@ public class BattleSystem : MonoBehaviour
         SetCardDragable(false);
         Debug.Log("战斗结束");
     }
-    
+
     private GameObject GenerateCard(CardSO cardData)
     {
-        GameObject cardObj; 
+        GameObject cardObj;
 
         if (cardData is AttackCardSO)
         {
-            cardObj =  Instantiate(attackCardPrefab);
+            cardObj = Instantiate(attackCardPrefab);
             AttackCard card = cardObj.GetComponent<AttackCard>();
             card.AttackCardSo = cardData as AttackCardSO;
             cardObj.GetComponent<AttackCardUI>()?.UpdateUI();
@@ -196,7 +211,7 @@ public class BattleSystem : MonoBehaviour
         return cardObj;
     }
 
-    private void PlayerDrawCard(Func<CardSO,GameObject> generateCardFunc)
+    private void PlayerDrawCard(Func<CardSO, GameObject> generateCardFunc)
     {
         CardSO cardData = Player.DrawOneCard();
         GameObject cardObj = generateCardFunc(cardData);
@@ -207,7 +222,7 @@ public class BattleSystem : MonoBehaviour
         EventCenter.GetInstance().EventTrigger("PlayerDrawCard");
     }
 
-    private void EnemyDrawCard(Func<CardSO,GameObject> generateCardFunc)
+    private void EnemyDrawCard(Func<CardSO, GameObject> generateCardFunc)
     {
         CardSO cardData = Enemy.DrawOneCard();
         GameObject cardObj = generateCardFunc(cardData);
@@ -221,6 +236,7 @@ public class BattleSystem : MonoBehaviour
         Player.handsCard.Remove(currentPlayerCard);
         //battleUI.playerHand.RemoveCard(currentPlayerCard);
         
+
         switch (currentPlayerCard.tag)
         {
             case "AttackCard":
@@ -239,7 +255,7 @@ public class BattleSystem : MonoBehaviour
                 Debug.LogError("Player打出的牌，类型古怪");
                 break;
         }
-        
+
         Destroy(currentPlayerCard);
         currentPlayerCard = null;
         EventCenter.GetInstance().EventTrigger("PlayerPlayCard");
@@ -249,7 +265,7 @@ public class BattleSystem : MonoBehaviour
     {
         Enemy.handsCard.Remove(currentEnemyCard);
         //battleUI.enemyHand.RemoveCard(currentPlayerCard);
-        
+
         switch (currentEnemyCard.tag)
         {
             case "AttackCard":
@@ -268,12 +284,12 @@ public class BattleSystem : MonoBehaviour
                 Debug.LogError("Enemy打出的牌，类型古怪");
                 break;
         }
-        
+
         Destroy(currentEnemyCard);
         currentEnemyCard = null;
     }
 
- 
+
     private void SetCardDragable(bool isDragable)
     {
         foreach (var card in Player.handsCard)
@@ -281,8 +297,8 @@ public class BattleSystem : MonoBehaviour
             card.GetComponent<DragableCard>().enabled = isDragable;
         }
     }
-        
-    
+
+
 
 
 

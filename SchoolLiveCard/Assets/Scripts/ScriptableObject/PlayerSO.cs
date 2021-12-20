@@ -6,4 +6,5 @@ using UnityEngine;
 public class PlayerSO : FighterSO
 {
     public int currentHp;
+    public int Gold;
 }
