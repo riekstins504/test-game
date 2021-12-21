@@ -15,12 +15,12 @@ MonoBehaviour:
   fighterName: "\u5C0F\u7EA2\u5E3D"
   introduction: "\u7528\u4E8E\u6D4B\u8BD5"
   level: 3
-  maxHp: 10
+  maxHp: 20
   initMagic: 3
   cardBag:
   - {fileID: 11400000, guid: d2fcf32592f31dd42adb634e150deb76, type: 2}
   - {fileID: 11400000, guid: 538ad5a27beb7d94c991f86483119e2b, type: 2}
   - {fileID: 11400000, guid: 411f3f898d6da944590460aa670a74b1, type: 2}
   - {fileID: 11400000, guid: 82c11f437f2266c4487398c31e8354ac, type: 2}
-  currentHp: 8
+  currentHp: 20
   Gold: 100

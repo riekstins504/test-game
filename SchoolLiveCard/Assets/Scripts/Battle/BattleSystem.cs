@@ -7,6 +7,7 @@ using Unity.Collections;
 using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
+using UnityEngine.SceneManagement;
 
 //负责管理双方的对战，比如把一方的牌传给另一方
 //控制每个回合，包括清点双方debuff，发牌。
@@ -53,6 +54,8 @@ public class BattleSystem : MonoBehaviour
         {
             _instance = this;
         }
+        
+        EventCenter.GetInstance().AddEventListener("ExitBattleField", ExitBattleField);
     }
 
     public void EndPlayerAction()
@@ -63,12 +66,11 @@ public class BattleSystem : MonoBehaviour
 
     private void Start()
     {
-
         currentState = BattleState.START;
-        StartCoroutine(SetupBattle());
+        StartCoroutine(SetupBattleField());
     }
-
-    private IEnumerator SetupBattle()
+    
+    private IEnumerator SetupBattleField()
     {
         //实例化Player和Enemy
 
@@ -87,6 +89,16 @@ public class BattleSystem : MonoBehaviour
         currentState = BattleState.PLAYERTURN;
 
         StartCoroutine(PlayerTurn());
+    }
+
+    private void ExitBattleField()
+    {
+        if (currentState == BattleState.WON)
+        {
+            Player.SaveDataToSO();
+        }
+        EventCenter.GetInstance().Clear();//THIS IS VERY IMPORTANT!!!
+        SceneManager.LoadScene(0);
     }
 
     private IEnumerator PlayerTurn()
@@ -182,7 +194,17 @@ public class BattleSystem : MonoBehaviour
     {
         StopAllCoroutines();
         SetCardDragable(false);
-        Debug.Log("战斗结束");
+        battleUI.endPanelUI.gameObject.SetActive(true);
+        if (currentState == BattleState.WON)
+        {
+            battleUI.endPanelUI.SetText(BattleState.WON);
+            Debug.Log("战斗结束, 赢");
+        }
+        else if (currentState == BattleState.LOST)
+        {
+            battleUI.endPanelUI.SetText(BattleState.LOST);
+            Debug.Log("战斗结束, 输");
+        }
     }
 
     private GameObject GenerateCard(CardSO cardData)

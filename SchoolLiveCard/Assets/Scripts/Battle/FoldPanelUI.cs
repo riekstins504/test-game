@@ -38,7 +38,7 @@ public class FoldPanelUI : MonoBehaviour
 
         //InitDoTweenSequence();
     }
-
+    
 
 
     private void OnEnable()
@@ -98,43 +98,11 @@ public class FoldPanelUI : MonoBehaviour
         }
         else
         {
-            // descriptionText.DOColor(Color.red, 0.2f);
-            // descriptionText.DOColor(Color.white, 0.2f);
-            // descriptionText.DOColor(Color.red, 0.2f);
-            // descriptionText.DOColor(Color.white, 0.2f);
-            // descriptionText.DOColor(Color.red, 0.2f);
-            //StartCoroutine(TwinkleText(descriptionText));
-            //descriptionText.color = Color.white;
             descriptionText.DOComplete();
             descriptionText.DOColor(Color.red, 0.5f).SetEase(Ease.Flash, 6, 0);
         }
     }
     
-    // private void InitDoTweenSequence()
-    // {
-    //     if (sequence == null)
-    //     {
-    //         sequence = DOTween.Sequence();
-    //         sequence.Append(descriptionText.DOColor(Color.red, 0.2f));
-    //         sequence.Append(descriptionText.DOColor(Color.white, 0.2f));
-    //         sequence.SetLoops(3);
-    //     }
-    // }
 
-    // IEnumerator TwinkleText(Text text)
-    // {
-    //     text.DOColor(Color.red, 0.2f);
-    //     yield return new WaitForSeconds(0.2f);
-    //     text.DOColor(Color.white, 0.2f);
-    //     yield return new WaitForSeconds(0.2f);
-    //     text.DOColor(Color.red, 0.2f);
-    //     yield return new WaitForSeconds(0.2f);
-    //     text.DOColor(Color.white, 0.2f);
-    //     yield return new WaitForSeconds(0.2f);
-    //     text.DOColor(Color.red, 0.2f);
-    //     yield return new WaitForSeconds(0.2f);
-    //     text.DOColor(Color.white, 0.2f);
-    //     yield return new WaitForSeconds(0.2f);
-    // }
     
 }

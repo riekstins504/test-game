@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -20,6 +21,16 @@ public class EnemyBattleHUD : MonoBehaviour
     
     private void InitEnemyHUD(EnemySO enemySo)
     {
+        if (enemyHpBar != null)
+        {
+            Debug.Log("enemyHpBar != null");
+        }
+
+        if (enemyMagicBar != null)
+        {
+            Debug.Log("enemyMagicBar != null");
+        }
+        
         enemyNameText.text = enemySo.fighterName;
         enemyLevel.text = $"Lv.{enemySo.level}";
         HpChangeInfo info;

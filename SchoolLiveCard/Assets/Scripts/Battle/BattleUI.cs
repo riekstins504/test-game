@@ -24,11 +24,12 @@ public class BattleUI : MonoBehaviour
     [Header("弃牌面板")]
     public FoldPanelUI foldPanel;
 
-
+    [Header("结算面板")] 
+    public EndPanelUI endPanelUI;
 
     private void Awake()
     {
-
+        
     }
 
     public IEnumerator PlayerDrawCardAnimation(List<GameObject> cardObjs)
