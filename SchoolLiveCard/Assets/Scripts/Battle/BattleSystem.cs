@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using DG.Tweening;
 using Unity.Collections;
+using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
@@ -54,11 +55,14 @@ public class BattleSystem : MonoBehaviour
         }
     }
 
+    public void EndPlayerAction()
+    {
+        isPlayerEndAction = true;
+    }
     
 
     private void Start()
     {
-        battleUI.endRoundBtn.onClick.AddListener(delegate { isPlayerEndAction = true; });
 
         currentState = BattleState.START;
         StartCoroutine(SetupBattle());
@@ -79,7 +83,7 @@ public class BattleSystem : MonoBehaviour
         EventCenter.GetInstance().EventTrigger<PlayerSO>("PlayerEnterBattle", Player.playerConfig);
         EventCenter.GetInstance().EventTrigger<EnemySO>("EnemyEnterBattle", Enemy.enemyConfig);
         
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0.1f);
         currentState = BattleState.PLAYERTURN;
 
         StartCoroutine(PlayerTurn());
@@ -99,19 +103,20 @@ public class BattleSystem : MonoBehaviour
             {
                 yield return null;//挂起
             }
+            EventCenter.GetInstance().EventTrigger("PlayerFoldCardFinish");
         }
-        
-        
 
         //抽牌
-        for (int i = 0; i < 4; i++)
+        List<GameObject> cardObjects = new List<GameObject>();
+        for (int i = 0; i < 3; i++)
         {
-            PlayerDrawCard(GenerateCard);
+            cardObjects.Add(PlayerDrawCard(GenerateCard));
         }
-
+        //播放抽牌动画
+        yield return StartCoroutine(battleUI.PlayerDrawCardAnimation(cardObjects));
         
+        EventCenter.GetInstance().EventTrigger("PlayerDrawCardFinish");
         
-
         //Make card dragable
         SetCardDragable(true);
 
@@ -124,6 +129,7 @@ public class BattleSystem : MonoBehaviour
             {
                 //对这张牌做一些操作
                 PlayerPlayCard();
+                EventCenter.GetInstance().EventTrigger("PlayerPlayCardFinish");
             }
 
             yield return null;
@@ -218,7 +224,7 @@ public class BattleSystem : MonoBehaviour
             .SetEase(Ease.OutQuint);
     }
 
-    private void PlayerDrawCard(Func<CardSO, GameObject> generateCardFunc)
+    private GameObject PlayerDrawCard(Func<CardSO, GameObject> generateCardFunc)
     {
         CardSO cardData = Player.DrawOneCard();
         GameObject cardObj = generateCardFunc(cardData);
@@ -226,7 +232,8 @@ public class BattleSystem : MonoBehaviour
         Player.handsCard.Add(cardObj);
         //battleUI.playerHand.AddCard(cardObj);
         cardObj.transform.SetParent(battleUI.playerHand.transform);
-        EventCenter.GetInstance().EventTrigger("PlayerDrawCard");
+        cardObj.transform.localScale = Vector3.one;
+        return cardObj;
     }
 
     private void EnemyDrawCard(Func<CardSO, GameObject> generateCardFunc)
@@ -265,7 +272,6 @@ public class BattleSystem : MonoBehaviour
 
         Destroy(currentPlayerCard);
         currentPlayerCard = null;
-        EventCenter.GetInstance().EventTrigger("PlayerPlayCard");
     }
 
     private void EnemyPlayCard()

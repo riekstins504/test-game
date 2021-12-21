@@ -17,7 +17,6 @@ public class BattleWith001 : MonoBehaviour
     private void StartBattleWith001()
     {
         Debug.Log("Click the Button");
-        // Enemy.data = EnemyLibrary.Instance.EnemyDict[1];
-        SceneManager.LoadScene(1, LoadSceneMode.Single);//Default by Single
+        SceneManager.LoadScene(1);
     }
 }

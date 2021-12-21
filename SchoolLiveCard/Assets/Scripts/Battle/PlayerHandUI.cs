@@ -28,8 +28,9 @@ public class PlayerHandUI : MonoBehaviour
 
     private void Start()
     {
-        EventCenter.GetInstance().AddEventListener("PlayerDrawCard", UpdateHandUI);
-        EventCenter.GetInstance().AddEventListener("PlayerPlayCard", UpdateHandUI);
+        EventCenter.GetInstance().AddEventListener("PlayerDrawCardFinish", UpdateHandUI);
+        EventCenter.GetInstance().AddEventListener("PlayerFoldCardFinish", UpdateHandUI);
+        EventCenter.GetInstance().AddEventListener("PlayerPlayCardFinish", UpdateHandUI);
     }
 
     private void UpdateHandUI()
