@@ -24,7 +24,8 @@ public class Player : MonoBehaviour,IDamagable
     void Start()
     {
         Debug.Log("Player Start");
-        //EventCenter.GetInstance().EventTrigger<PlayerSO>("PlayerEnterBattle", playerConfig);
+        
+        
         
         //抽牌事件处理器
         //OnPlayerDrawCard += UIManager.Instance.PlayerDrawCardAction;
@@ -35,7 +36,7 @@ public class Player : MonoBehaviour,IDamagable
     public void LoadDataFromSO()//主要是加载一些动态数据，比如血量，魔力值
     {
         maxHp = playerConfig.maxHp;
-        currentHp = playerConfig.maxHp;
+        currentHp = playerConfig.currentHp;
         magic = playerConfig.initMagic;
         
     }
@@ -54,7 +55,10 @@ public class Player : MonoBehaviour,IDamagable
     {
         currentHp = Math.Max(0, currentHp - damageValue);
         Debug.Log($"Player hp: {currentHp}");
-        ValueBarInfo hpInfo = new ValueBarInfo(currentHp, maxHp);
+        HpChangeInfo hpInfo = new HpChangeInfo();
+        hpInfo.curHp = currentHp;
+        hpInfo.maxHp = maxHp;
+        hpInfo.changedHp = -damageValue;
         EventCenter.GetInstance().EventTrigger("PlayerTakenDamage",hpInfo);
         if (currentHp <= 0)
         {

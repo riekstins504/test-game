@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -20,6 +21,7 @@ public class BattleUI : MonoBehaviour
     public PlayerHandUI playerHand;
     public GameObject enemyHand;
     public Button endRoundBtn;
+    public Image redImage;
 
     [Header("Enemy HUD")] 
     public Text enemyNameText;
@@ -32,31 +34,67 @@ public class BattleUI : MonoBehaviour
     public ValueBarUI playerMagicBar;
     public FoldPanelUI foldPanel;
 
+    [Header("Damage UI")] 
+    public Text damageValueText;
+    public RectTransform playerDamageTextPos;
+    public RectTransform enemyDamageTextPos;
+
     private void Awake()
     {
         EventCenter.GetInstance().AddEventListener<PlayerSO>("PlayerEnterBattle", SetPlayerHUD);
         EventCenter.GetInstance().AddEventListener<EnemySO>("EnemyEnterBattle", SetEnemyHUD);
         
-        EventCenter.GetInstance().AddEventListener<ValueBarInfo>("PlayerTakenDamage", SetPlayerHpUI);
-        EventCenter.GetInstance().AddEventListener<ValueBarInfo>("EnemyTakenDamage", SetEnemyHpUI);
+        EventCenter.GetInstance().AddEventListener<HpChangeInfo>("PlayerTakenDamage", ShakeCamera);
+        EventCenter.GetInstance().AddEventListener<HpChangeInfo>("PlayerTakenDamage", SetPlayerHpUI);
+        EventCenter.GetInstance().AddEventListener<HpChangeInfo>("PlayerTakenDamage", ShowPlayerDamageText);
+        
+        EventCenter.GetInstance().AddEventListener<HpChangeInfo>("EnemyTakenDamage", SetEnemyHpUI);
+        EventCenter.GetInstance().AddEventListener<HpChangeInfo>("EnemyTakenDamage", ShowEnemyDamageText);
     }
 
-    private void SetEnemyHpUI(ValueBarInfo hpInfo)
+    
+    private void ShowPlayerDamageText(HpChangeInfo info)
     {
-        enemyHpBar.SetValueBar(hpInfo);
+        Text textCom = Instantiate(damageValueText,transform).GetComponent<Text>();
+        textCom.text = info.changedHp.ToString();
+        textCom.rectTransform.position = playerDamageTextPos.position;
+        textCom.rectTransform.DOMoveY(playerDamageTextPos.position.y + 35f, 0.5f).SetEase(Ease.OutQuint)
+            .OnStepComplete(() => { Destroy(textCom.gameObject);});
     }
-
-    private void SetPlayerHpUI(ValueBarInfo hpInfo)
+    
+    private void ShowEnemyDamageText(HpChangeInfo info)
     {
-        playerHpBar.SetValueBar(hpInfo);
+        Text textCom = Instantiate(damageValueText,transform).GetComponent<Text>();
+        textCom.text = info.changedHp.ToString();
+        textCom.rectTransform.position = enemyDamageTextPos.position;
+        textCom.rectTransform.DOMoveY(enemyDamageTextPos.position.y + 35f, 0.5f).SetEase(Ease.OutQuint)
+            .OnStepComplete(() => { Destroy(textCom.gameObject);});
     }
 
-    private void SetEnemyMagicUI(ValueBarInfo magicInfo)
+    private void ShakeCamera(HpChangeInfo arg0)
+    {
+        Camera.main.DOShakePosition(0.5f, 0.1f).SetEase(Ease.InFlash);
+        redImage.color = new Color(1f, 0f, 0f, 0.35f);
+        redImage.DOColor(Color.clear, 0.5f);
+    }
+
+
+    private void SetEnemyHpUI(HpChangeInfo hpInfo)
+    {
+        enemyHpBar.SetValueBar(hpInfo.curHp,hpInfo.maxHp);
+    }
+
+    private void SetPlayerHpUI(HpChangeInfo hpInfo)
+    {
+        playerHpBar.SetValueBar(hpInfo.curHp,hpInfo.maxHp);
+    }
+
+    private void SetEnemyMagicUI(HpChangeInfo magicInfo)
     {
         
     }
 
-    private void SetPlayerMagicUI(ValueBarInfo magicInfo)
+    private void SetPlayerMagicUI(HpChangeInfo magicInfo)
     {
         
     }
@@ -65,14 +103,15 @@ public class BattleUI : MonoBehaviour
     {
         enemyNameText.text = enemySo.fighterName;
         enemyLevel.text = $"Lv.{enemySo.level}";
-        enemyHpBar.SetValueBar(new ValueBarInfo(enemySo.maxHp,enemySo.maxHp));
-        enemyMagicBar.SetValueBar(new ValueBarInfo(enemySo.initMagic, enemySo.initMagic));
+        HpChangeInfo info;
+        enemyHpBar.SetValueBar(enemySo.maxHp,enemySo.maxHp);
+        enemyMagicBar.SetValueBar(enemySo.initMagic, enemySo.initMagic);
     }
 
     private void SetPlayerHUD(PlayerSO playerSo)
     {
-        playerHpBar.SetValueBar(new ValueBarInfo(playerSo.currentHp, playerSo.maxHp));
-        playerMagicBar.SetValueBar(new ValueBarInfo(playerSo.initMagic, playerSo.initMagic));
+        playerHpBar.SetValueBar(playerSo.currentHp, playerSo.maxHp);
+        playerMagicBar.SetValueBar(playerSo.initMagic, playerSo.initMagic);
     }
 
     

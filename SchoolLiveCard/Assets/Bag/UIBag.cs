@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class UIBag : MonoBehaviour
 {
     public static UIBag Instance;
-    //Ã¿ĞĞ¶àÉÙ¸ö¿¨ÅÆ
+    //æ¯è¡Œå¤šå°‘ä¸ªå¡ç‰Œ
     public int colCount = 3;
     public List<CardSO> bagDataList = new List<CardSO>();
     public List<BagCard> bagCardList = new List<BagCard>();
@@ -29,18 +29,18 @@ public class UIBag : MonoBehaviour
     public void RefreshGold()
     {
         Debug.Log("Refresh Gold!");
-        uiGold.text = BattleSystem.Instance.GetPlayer.playerConfig.Gold.ToString();
+        uiGold.text = BattleSystem.Instance.Player.playerConfig.Gold.ToString();
     }
 
     public void RefreshUI()
     {
         bagCardList.Clear();
         int length = bagDataList.Count;
-        //Ìí¼Ó£¬É¾³ıËùĞèĞĞÊı
+        //æ·»åŠ ï¼Œåˆ é™¤æ‰€éœ€è¡Œæ•°
         int rowLength = Mathf.CeilToInt((float)length / colCount);
         rowLength = rowLength - rowContentList.Count;
         Debug.Log(rowLength);
-        //Ìí¼ÓĞÂĞĞÊı
+        //æ·»åŠ æ–°è¡Œæ•°
         if (rowLength >= 0)
         {
             for (int i = 0; i < rowLength; i++)
@@ -49,7 +49,7 @@ public class UIBag : MonoBehaviour
                 Debug.Log("Create HorCard!");
             }
         }
-        //É¾³ıĞĞÊı
+        //åˆ é™¤è¡Œæ•°
         else
         {
             while (rowLength < 0)
@@ -65,7 +65,7 @@ public class UIBag : MonoBehaviour
         int cardIndex = 0;
         int rowIndex = 0;
 
-        //Ìí¼ÓÔªËØ
+        //æ·»åŠ å…ƒç´ 
         while (true)
         {
             if (length == 0)

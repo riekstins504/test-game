@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using DG.Tweening;
 using Unity.Collections;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
@@ -34,14 +35,7 @@ public class BattleSystem : MonoBehaviour
     private BattleState currentState;
     private bool isPlayerEndAction = false;
     private bool isEnemyEndAction = false;
-
-    public Player GetPlayer
-    {
-        get
-        {
-            return player;
-        }
-    }
+    
 
     private static BattleSystem _instance;
     public static BattleSystem Instance
@@ -146,7 +140,6 @@ public class BattleSystem : MonoBehaviour
     {
         Debug.Log("Enemy Turn");
 
-
         //抽牌
         for (int i = 0; i < 3; i++)
         {
@@ -167,6 +160,9 @@ public class BattleSystem : MonoBehaviour
             if (currentEnemyCard != null)
             {
                 //对这张牌做一些操作
+                float interval = 0.5f;
+                SystemShowEnemyCurrentCard(interval);
+                yield return new WaitForSeconds(interval + 1f);
                 EnemyPlayCard();
             }
         }
@@ -211,6 +207,17 @@ public class BattleSystem : MonoBehaviour
         return cardObj;
     }
 
+    private void SystemShowEnemyCurrentCard(float interval)
+    {
+        Vector2 screenCenter = new Vector2(Screen.width / 2f, Screen.height / 2f);
+        currentEnemyCard.transform.position = screenCenter + Vector2.up * 200f;
+        currentEnemyCard.transform.localScale = new Vector3(0.3f, 0.3f, 1);
+        currentEnemyCard.transform.DOMove(screenCenter, interval)
+            .SetEase(Ease.InOutQuint);
+        currentEnemyCard.transform.DOScale(new Vector3(1.5f,1.5f,1), interval)
+            .SetEase(Ease.OutQuint);
+    }
+
     private void PlayerDrawCard(Func<CardSO, GameObject> generateCardFunc)
     {
         CardSO cardData = Player.DrawOneCard();
@@ -227,7 +234,7 @@ public class BattleSystem : MonoBehaviour
         CardSO cardData = Enemy.DrawOneCard();
         GameObject cardObj = generateCardFunc(cardData);
         Enemy.handsCard.Add(cardObj);
-        cardObj.transform.SetParent(battleUI.enemyHand.transform);
+        cardObj.transform.SetParent(battleUI.enemyHand.transform,false);
         //battleUI.enemyHand.AddCard(cardObj);
     }
 
@@ -264,7 +271,6 @@ public class BattleSystem : MonoBehaviour
     private void EnemyPlayCard()
     {
         Enemy.handsCard.Remove(currentEnemyCard);
-        //battleUI.enemyHand.RemoveCard(currentPlayerCard);
 
         switch (currentEnemyCard.tag)
         {

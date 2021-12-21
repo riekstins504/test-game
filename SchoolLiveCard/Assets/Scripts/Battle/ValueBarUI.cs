@@ -4,17 +4,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public struct ValueBarInfo
+public struct HpChangeInfo
 {
-    public int curValue;
-    public int maxValue;
-
-    public ValueBarInfo(int _cur, int _max)
-    {
-        curValue = _cur;
-        maxValue = _max;
-    }
-}
+    public int curHp;
+    public int maxHp;
+    public int changedHp;//if >0 recover hp, if <0 reduce hp
+};
 
 public class ValueBarUI : MonoBehaviour
 {
@@ -28,18 +23,18 @@ public class ValueBarUI : MonoBehaviour
     }
 
 
-    public void SetValueBar(ValueBarInfo info)
+    public void SetValueBar(int curValue, int maxValue)
     {
         if (isShowMaxNum)
         {
-            valueBarText.text = $"{info.curValue}/{info.maxValue}";
+            valueBarText.text = $"{curValue}/{maxValue}";
         }
         else
         {
-            valueBarText.text = $"{info.curValue}";
+            valueBarText.text = $"{curValue}";
         }
 
-        m_slider.maxValue = info.maxValue;
-        m_slider.value = info.curValue;
+        m_slider.maxValue = maxValue;
+        m_slider.value = curValue;
     }
 }
