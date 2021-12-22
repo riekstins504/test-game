@@ -23,12 +23,16 @@ public enum BattleState
 
 public class BattleSystem : MonoBehaviour
 {
-    public GameObject playerPrefab;
-    public GameObject enemyPrefab;
-    [Header("卡牌预制体")]
+    //public GameObject playerPrefab;
+    [Header("配置")]
+    public PlayerSO playerConfig;
+    public EnemySO enemyConfig;
+    
+    [Header("预制体")]
     public GameObject attackCardPrefab;
     public GameObject magicCardPrefab;
 
+    [Header("UI相关")]
     public BattleUI battleUI;
     
     public Player Player { get; private set; }
@@ -73,13 +77,9 @@ public class BattleSystem : MonoBehaviour
     private IEnumerator SetupBattleField()
     {
         //实例化Player和Enemy
-
-        Player = Instantiate(playerPrefab).GetComponent<Player>();
-        Enemy = Instantiate(enemyPrefab).GetComponent<Enemy>();
+        Player = new Player(playerConfig);
+        Enemy = new Enemy(enemyConfig);
         
-        Player.LoadDataFromSO();
-        Enemy.LoadDataFromSO();
-
         //更新UI
         //battleUI.SetEnemyUI(enemy.enemyConfig.fighterName, enemy.enemyConfig.level);
         EventCenter.GetInstance().EventTrigger<PlayerSO>("PlayerEnterBattle", Player.playerConfig);

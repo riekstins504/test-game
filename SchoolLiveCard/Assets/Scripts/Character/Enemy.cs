@@ -1,25 +1,32 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.Networking;
 using Random = UnityEngine.Random;
 
-public class Enemy : MonoBehaviour,IDamagable
+public class Enemy : IDamagable
 {
     public EnemySO enemyConfig;
    
     //public List<CardSO> cardsBag;
 
-    public List<GameObject> handsCard;//手上的卡
+    public List<GameObject> handsCard = new List<GameObject>();//手上的卡
 
     private int maxHp;
     private int currentHp;
     private int magic;
 
-    void Start()
+    // void Start()
+    // {
+    //     Debug.Log("Enemy Start");
+    // }
+
+    public Enemy(EnemySO enemyScriptableObject)
     {
-        Debug.Log("Enemy Start");
+        enemyConfig = enemyScriptableObject;
+        LoadDataFromSO();
     }
 
     public void LoadDataFromSO()//主要是加载一些动态数据，比如血量
@@ -29,10 +36,10 @@ public class Enemy : MonoBehaviour,IDamagable
         magic = enemyConfig.initMagic;
     }
     
-    public void SaveDataToSO()
-    {
-        
-    }
+    // public void SaveDataToSO()
+    // {
+    //     
+    // }
 
     public bool ChooseCardToPlay()
     {

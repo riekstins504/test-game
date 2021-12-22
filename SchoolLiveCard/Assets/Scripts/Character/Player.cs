@@ -9,28 +9,26 @@ using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 
-public class Player : MonoBehaviour,IDamagable
+public class Player : IDamagable
 {
     public PlayerSO playerConfig;
 
-    public List<GameObject> handsCard; //手上的卡
+    public List<GameObject> handsCard  = new List<GameObject>(); //手上的卡
 
     public int maxHp;
     public int currentHp;
     public int magic;
 
 
-
-    void Start()
+    public Player(PlayerSO playerScriptableObject)
     {
-        Debug.Log("Player Start");
-        
-        
-        
-        //抽牌事件处理器
-        //OnPlayerDrawCard += UIManager.Instance.PlayerDrawCardAction;
-        //打牌事件处理器
-        //OnPlayerPlayCard += UIManager.Instance.PlayerPlayCardAction;
+        playerConfig = playerScriptableObject;
+        LoadDataFromSO();
+    }
+
+    public Player(int hp)
+    {
+        currentHp = hp;
     }
 
     public void LoadDataFromSO()//主要是加载一些动态数据，比如血量，魔力值
@@ -38,7 +36,6 @@ public class Player : MonoBehaviour,IDamagable
         maxHp = playerConfig.maxHp;
         currentHp = playerConfig.currentHp;
         magic = playerConfig.initMagic;
-        
     }
     
     public void SaveDataToSO()
@@ -53,8 +50,9 @@ public class Player : MonoBehaviour,IDamagable
 
     public bool TakeDamage(int damageValue)
     {
+        //Debug.Log($"Player hp: {currentHp}");
         currentHp = Math.Max(0, currentHp - damageValue);
-        Debug.Log($"Player hp: {currentHp}");
+        //Debug.Log($"Player hp: {currentHp}");
         HpChangeInfo hpInfo = new HpChangeInfo();
         hpInfo.curHp = currentHp;
         hpInfo.maxHp = maxHp;
