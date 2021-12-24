@@ -31,7 +31,7 @@ public class EnemyBattleHUD : MonoBehaviour
             Debug.Log("enemyMagicBar != null");
         }
         
-        enemyNameText.text = enemySo.fighterName;
+        enemyNameText.text = enemySo.enemyName;
         enemyLevel.text = $"Lv.{enemySo.level}";
         HpChangeInfo info;
         enemyHpBar.SetValueBar(enemySo.maxHp,enemySo.maxHp);

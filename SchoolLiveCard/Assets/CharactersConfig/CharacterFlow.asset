@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fbf0bc3d2c78d64e8914952c56a1278, type: 3}
+  m_Name: CharacterFlow
+  m_EditorClassIdentifier: 
+  charactersFlow:
+  - {fileID: 11400000, guid: 9989018ba95bd954e90d3fe5c6b5b7ae, type: 2}
+  - {fileID: 11400000, guid: 429017f5c5d4cbc49afa807e7c5058df, type: 2}
+  - {fileID: 11400000, guid: a69072f9f892d804a818019a21d76d8c, type: 2}
+  - {fileID: 11400000, guid: 429017f5c5d4cbc49afa807e7c5058df, type: 2}
+  - {fileID: 11400000, guid: 9989018ba95bd954e90d3fe5c6b5b7ae, type: 2}
+  cache:
+  - {fileID: 11400000, guid: 9989018ba95bd954e90d3fe5c6b5b7ae, type: 2}
+  - {fileID: 11400000, guid: 429017f5c5d4cbc49afa807e7c5058df, type: 2}
+  - {fileID: 11400000, guid: 429017f5c5d4cbc49afa807e7c5058df, type: 2}
+  curIndex: 3

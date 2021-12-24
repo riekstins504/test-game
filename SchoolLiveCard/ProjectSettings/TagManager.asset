@@ -8,6 +8,7 @@ TagManager:
   - PlayCardZone
   - AttackCard
   - MagicCard
+  - Character
   layers:
   - Default
   - TransparentFX

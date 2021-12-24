@@ -9,6 +9,11 @@ public class GameManager : MonoBehaviour
     {
         get{ return _instance;}
     }
+
+    public CharacterFlowSO characterFlowConfig;
+    //public StoryFlow storyFlow;
+
+    public ICommunicable[] haha;
     
     void Awake()
     {
@@ -28,8 +33,8 @@ public class GameManager : MonoBehaviour
     
     // Start is called before the first frame update
     void Start()
-    {
-        
+    { 
+        //storyFlow = new StoryFlow(characterFlowConfig.charactersFlow);
     }
     
 }

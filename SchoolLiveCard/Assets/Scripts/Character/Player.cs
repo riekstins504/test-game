@@ -11,7 +11,7 @@ using Random = UnityEngine.Random;
 
 public class Player : IDamagable
 {
-    public PlayerSO playerConfig;
+    public readonly PlayerSO playerConfig;
 
     public List<GameObject> handsCard  = new List<GameObject>(); //手上的卡
 

@@ -8,7 +8,7 @@ using Random = UnityEngine.Random;
 
 public class Enemy : IDamagable
 {
-    public EnemySO enemyConfig;
+    public readonly EnemySO enemyConfig;
    
     //public List<CardSO> cardsBag;
 
