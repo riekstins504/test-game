@@ -9,15 +9,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8d240bbefcf9c3240b55eff8c0b75efe, type: 3}
-  m_Name: Player001
+  m_Script: {fileID: 11500000, guid: d02f2fa1f405125408f73487fa35c84d, type: 3}
+  m_Name: Enemy_Math_1
   m_EditorClassIdentifier: 
-  playerName: 
-  level: 3
-  currentHp: 17
-  maxHp: 20
-  initMagic: 3
+  enemyMesh: {fileID: 0}
+  enemyName: "\u9AD8\u7B49\u6570\u5B66\uFF08\u4E0A\uFF09"
+  introduction: "\u201C\u5341\u4E8C\u4E94\u201D\u666E\u901A\u9AD8\u7B49\u6559\u80B2\u672C\u79D1\u56FD\u5BB6\u7EA7\u89C4\u5212\u6559\u6750"
+  level: 1
+  maxHp: 6
+  initMagic: 2
   cardBag:
   - {fileID: 11400000, guid: d2fcf32592f31dd42adb634e150deb76, type: 2}
   - {fileID: 11400000, guid: 538ad5a27beb7d94c991f86483119e2b, type: 2}
-  Gold: 100

@@ -12,14 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fbf0bc3d2c78d64e8914952c56a1278, type: 3}
   m_Name: CharacterFlow
   m_EditorClassIdentifier: 
-  charactersFlow:
+  flow:
   - {fileID: 11400000, guid: 9989018ba95bd954e90d3fe5c6b5b7ae, type: 2}
   - {fileID: 11400000, guid: 429017f5c5d4cbc49afa807e7c5058df, type: 2}
   - {fileID: 11400000, guid: a69072f9f892d804a818019a21d76d8c, type: 2}
-  - {fileID: 11400000, guid: 429017f5c5d4cbc49afa807e7c5058df, type: 2}
-  - {fileID: 11400000, guid: 9989018ba95bd954e90d3fe5c6b5b7ae, type: 2}
-  cache:
-  - {fileID: 11400000, guid: 9989018ba95bd954e90d3fe5c6b5b7ae, type: 2}
-  - {fileID: 11400000, guid: 429017f5c5d4cbc49afa807e7c5058df, type: 2}
-  - {fileID: 11400000, guid: 429017f5c5d4cbc49afa807e7c5058df, type: 2}
-  curIndex: 3
+  - {fileID: 11400000, guid: 300d03776f402c644bb150d832039231, type: 2}
+  - {fileID: 11400000, guid: f3ef34d81af95d143972e82778111b1d, type: 2}
+  - {fileID: 11400000, guid: afbb846598227a449970a8fdf4f92186, type: 2}
+  - {fileID: 11400000, guid: d5e8745a109c3c049a71efd81694fda4, type: 2}
+  - {fileID: 11400000, guid: 18c510931b3be994087d56124e5cbbe6, type: 2}
+  - {fileID: 11400000, guid: 36354fdefd1da3d4f9bf6e6f1f046e46, type: 2}
+  - {fileID: 11400000, guid: d54de02b5ed8e954686a9a76756bd407, type: 2}
+  - {fileID: 11400000, guid: 2fbfc2a301351e24fb9d40d42536698c, type: 2}
+  - {fileID: 11400000, guid: 1b2027b1831980f47ab989e2bfc79517, type: 2}
+  cache: []
+  curFlowIndex: 6

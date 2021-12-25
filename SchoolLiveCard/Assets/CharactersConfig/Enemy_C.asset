@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d02f2fa1f405125408f73487fa35c84d, type: 3}
-  m_Name: Enemy_Math
+  m_Name: Enemy_C
   m_EditorClassIdentifier: 
   enemyMesh: {fileID: 0}
-  enemyName: "\u9AD8\u7B49\u6570\u5B66"
-  introduction: "\u201C\u5341\u4E8C\u4E94\u201D\u666E\u901A\u9AD8\u7B49\u6559\u80B2\u672C\u79D1\u56FD\u5BB6\u7EA7\u89C4\u5212\u6559\u6750"
+  enemyName: "C\u8BED\u8A00\u7A0B\u5E8F\u8BBE\u8BA1"
+  introduction: "\u68A6\u5F00\u59CB\u7684\u5730\u65B9"
   level: 1
-  maxHp: 6
+  maxHp: 4
   initMagic: 2
   cardBag:
   - {fileID: 11400000, guid: d2fcf32592f31dd42adb634e150deb76, type: 2}

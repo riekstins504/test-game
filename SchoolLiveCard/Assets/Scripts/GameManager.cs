@@ -10,12 +10,23 @@ public class GameManager : MonoBehaviour
         get{ return _instance;}
     }
 
-    public CharacterFlowSO characterFlowConfig;
-    //public StoryFlow storyFlow;
-
-    public ICommunicable[] haha;
+    [SerializeField]
+    private CharacterFlowSO characterFlowConfig;
+    public StoryFlow storyFlow;
     
-    void Awake()
+    [SerializeField]
+    private PlayerSO _playerConfig;
+    private EnemySO _currentEnemyConfig;
+    public PlayerSO PlayerConfig
+    {
+        get => _playerConfig;
+    }
+    public EnemySO CurrentEnemyConfig { 
+        get=>_currentEnemyConfig;
+        set => _currentEnemyConfig = value;
+    }
+
+    private void Awake()
     {
         if (_instance == null)
         {
@@ -28,13 +39,12 @@ public class GameManager : MonoBehaviour
             //Debug.LogError("Get a second instance of GameManager class：" + this.GetType());
         }
     }
-
-
+    
     
     // Start is called before the first frame update
     void Start()
     { 
-        //storyFlow = new StoryFlow(characterFlowConfig.charactersFlow);
+        storyFlow = new StoryFlow(characterFlowConfig);
     }
     
 }

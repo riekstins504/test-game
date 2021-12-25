@@ -8,6 +8,8 @@ using UnityEngine.Serialization;
 public class UIManager : MonoBehaviour
 {
 
+    public Canvas wanderCanvas;
+    
     private static UIManager instance;
     public static UIManager Instance
     {
@@ -17,9 +19,6 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    //public BattleMgr battleMgr;
-    
-    
     private void Awake()
     {
         if (instance == null)
@@ -33,18 +32,14 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
 
+    private void OnEnable()
+    {
+        //EventCenter.GetInstance().AddEventListener("LoadBattleField",SwitchToBattleUI);
     }
 
-    // Update is called once per frame
-    void Update()
+    private void SwitchToBattleUI()
     {
-        
+        //wanderCanvas.enabled = false;
     }
-
-
-    
 }

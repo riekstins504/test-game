@@ -18,15 +18,16 @@ public enum BattleState
     PLAYERTURN,
     ENEMYTURN,
     WON,
-    LOST
+    LOST,
+    CLOSE,
 }
 
 public class BattleSystem : MonoBehaviour
 {
     //public GameObject playerPrefab;
     [Header("配置")]
-    public PlayerSO playerConfig;
-    public EnemySO enemyConfig;
+    private PlayerSO playerConfig;
+    private EnemySO enemyConfig;
     
     [Header("预制体")]
     public GameObject attackCardPrefab;
@@ -38,7 +39,7 @@ public class BattleSystem : MonoBehaviour
     public Player Player { get; private set; }
     public Enemy Enemy { get; private set; }
 
-    private BattleState currentState;
+    public static BattleState currentState;
     private bool isPlayerEndAction = false;
     private bool isEnemyEndAction = false;
     
@@ -76,6 +77,9 @@ public class BattleSystem : MonoBehaviour
     
     private IEnumerator SetupBattleField()
     {
+        playerConfig = GameManager.Instance.PlayerConfig;
+        enemyConfig = GameManager.Instance.CurrentEnemyConfig;
+        
         //实例化Player和Enemy
         Player = new Player(playerConfig);
         Enemy = new Enemy(enemyConfig);

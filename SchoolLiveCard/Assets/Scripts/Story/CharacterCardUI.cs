@@ -5,10 +5,12 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using DG.Tweening;
+using UnityEditor.Rendering;
+using UnityEngine.SceneManagement;
 
 public class CharacterCardUI : MonoBehaviour,IPointerDownHandler
 {
-    private CharacterSO currentCharacter;
+    public CharacterSO CurrentCharacter { private set; get; }
 
     public Text characterName;
     public Image characterImage;
@@ -22,26 +24,28 @@ public class CharacterCardUI : MonoBehaviour,IPointerDownHandler
     private RectTransform rt;
     private Vector2 originPos;
 
-    private static int cacheIndex = 0; //仅在从缓存加载卡牌时使用，所以CharacterCardUI共享，反正单线程，不用管同步问题
 
-    private IEnumerator Start()
+    private void Start()
     {
         //初始化Component
         rt = GetComponent<RectTransform>();
         originPos = rt.anchoredPosition;
         originColor = backgroundImage.color;
-        closeBtn.onClick.AddListener(() =>{ StartCoroutine(NextCard()); });
+        closeBtn.onClick.AddListener(() =>{ StartCoroutine(DoSkipAnimation()); });
 
+        Debug.Log("CharacterUI start");
+        
+        
         //从配置文件的Cache数组中加载之前的进度
-        currentCharacter = GameManager.Instance.characterFlowConfig.LoadFromCache();
-        //Debug.Log(cacheIndex);
-        //cacheIndex++;
-        if (currentCharacter != null)
-        {
-            rt.anchoredPosition += new Vector2(0, -Screen.height * 2f);
-            InitUI(currentCharacter);
-            yield return StartCoroutine(ComeBack());
-        }
+        // currentCharacter = GameManager.Instance.characterFlowConfig.LoadFromCache();
+        // //cacheIndex++;
+        // if (currentCharacter != null)
+        // {
+        //     rt.anchoredPosition += new Vector2(0, -Screen.height * 2f);
+        //     InitUI(currentCharacter);
+        //     yield return StartCoroutine(ComeBack());
+        // }
+        
     }
 
     private void OnEnable()
@@ -61,8 +65,14 @@ public class CharacterCardUI : MonoBehaviour,IPointerDownHandler
         EventCenter.GetInstance().EventTrigger<CharacterCardUI>("CharacterCardSelected",this);
     }
     
-    public void InitUI(CharacterSO so)
+    public void SetCharacterUI(CharacterSO so)
     {
+        CurrentCharacter = so;
+        if (so == null)
+        {
+            Debug.LogWarning("传入的Character 配置为空");
+            return;
+        }
         
         if (so is EnemySO)
         {
@@ -70,30 +80,56 @@ public class CharacterCardUI : MonoBehaviour,IPointerDownHandler
             characterName.text = enemySo.enemyName;
             introduction.text = enemySo.introduction;
             communicateBtn.GetComponentInChildren<Text>().text = "战斗";
+            communicateBtn.onClick.AddListener(() =>
+            {
+                GameManager.Instance.CurrentEnemyConfig = enemySo;
+                EventCenter.GetInstance().EventTrigger("LoadBattleField");
+                SceneManager.LoadScene("BattleScene");
+            });
         }
     }
 
-    public IEnumerator NextCard()
+    public IEnumerator DoSkipAnimation()
     {
-        yield return StartCoroutine(Leave());
-        currentCharacter = GameManager.Instance.characterFlowConfig.NextCharacter(currentCharacter);
-        if (currentCharacter != null)
+        yield return StartCoroutine(DoLeaveAnimation());
+        CurrentCharacter = GameManager.Instance.storyFlow.NextCharacter(CurrentCharacter);
+        if (CurrentCharacter != null)
         {
-            InitUI(currentCharacter);
-            yield return StartCoroutine(ComeBack());
+            SetCharacterUI(CurrentCharacter);
+            yield return StartCoroutine(DoComeBackAnimation());
         }
     }
 
-    private IEnumerator Leave()
+    public IEnumerator DoDestroyAnimation()
     {
+        float interval = 1f;
+        backgroundImage.DOBlendableColor(Color.red, interval);
+        backgroundImage.DOBlendableColor(Color.clear,interval);
+        rt.DOScale(new Vector3(0.3f, 0.3f, 0f), interval);
+        yield return new WaitForSeconds(interval);
+        
+        CurrentCharacter = GameManager.Instance.storyFlow.NextCharacter(CurrentCharacter);
+        if (CurrentCharacter != null)
+        {
+            backgroundImage.color = Color.black;
+            rt.localScale = new Vector3(1f, 1f, 1f);
+            SetCharacterUI(CurrentCharacter);
+            yield return StartCoroutine(DoComeBackAnimation());
+        }
+    }
+    
+    public IEnumerator DoLeaveAnimation()
+    {
+        rt.anchoredPosition = originPos;
         closeBtn.enabled = false;
         DoSelect(false);
         rt.DOAnchorPosY(originPos.y - Screen.height*2f, 0.5f).SetEase(Ease.InQuint);
         yield return new WaitForSeconds(1f);
     }
     
-    private IEnumerator ComeBack()
+    public IEnumerator DoComeBackAnimation()
     {
+        rt.anchoredPosition = originPos - new Vector2(0, Screen.height * 2f);
         rt.DOAnchorPosY(originPos.y, 0.5f).SetEase(Ease.OutQuint);
         yield return new WaitForSeconds(0.5f);
         closeBtn.enabled = true;
