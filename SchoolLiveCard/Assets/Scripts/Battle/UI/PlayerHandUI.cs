@@ -9,28 +9,18 @@ public class PlayerHandUI : MonoBehaviour
     public Transform leftPoint;
     public Transform rightPoint;
     
-    // public void AddCard(GameObject card)
-    // {
-    //     card.transform.SetParent(this.transform);
-    //     if (cards == null)
-    //     {
-    //         cards = new List<GameObject>();
-    //     }
-    //     cards.Add(card);
-    //     UpdateHandUI();
-    // }
-    //
-    // public void RemoveCard(GameObject card)
-    // {
-    //     cards.Remove(card);
-    //     UpdateHandUI();
-    // }
-
-    private void Start()
+    private void OnEnable()
     {
         EventCenter.GetInstance().AddEventListener("PlayerDrawCardFinish", UpdateHandUI);
         EventCenter.GetInstance().AddEventListener("PlayerFoldCardFinish", UpdateHandUI);
         EventCenter.GetInstance().AddEventListener("PlayerPlayCardFinish", UpdateHandUI);
+    }
+
+    private void OnDisable()
+    {
+        EventCenter.GetInstance().RemoveEventListener("PlayerDrawCardFinish", UpdateHandUI);
+        EventCenter.GetInstance().RemoveEventListener("PlayerFoldCardFinish", UpdateHandUI);
+        EventCenter.GetInstance().RemoveEventListener("PlayerPlayCardFinish", UpdateHandUI);
     }
 
     private void UpdateHandUI()

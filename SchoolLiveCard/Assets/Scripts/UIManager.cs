@@ -33,10 +33,6 @@ public class UIManager : MonoBehaviour
     }
 
 
-    private void OnEnable()
-    {
-        //EventCenter.GetInstance().AddEventListener("LoadBattleField",SwitchToBattleUI);
-    }
 
     private void SwitchToBattleUI()
     {

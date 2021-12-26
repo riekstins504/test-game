@@ -22,27 +22,13 @@ public class FoldPanelUI : MonoBehaviour
     [HideInInspector]
     public List<GameObject> selectCards;
     
-    private void Start()
-    {
-        okBtn.onClick.AddListener(OkAction);
-        EventCenter.GetInstance().AddEventListener("FoldPanelSeleteOneCard", () => 
-        { 
-            remainCount--; 
-            UpdateDescriptionText();
-        });
-        EventCenter.GetInstance().AddEventListener("FoldPanelUnseleteOneCard", () =>
-        {
-            remainCount++;
-            UpdateDescriptionText();
-        });
-
-        //InitDoTweenSequence();
-    }
-    
-
 
     private void OnEnable()
     {
+        okBtn.onClick.AddListener(OkAction);
+        EventCenter.GetInstance().AddEventListener("FoldPanelSeleteOneCard", DoSelect);
+        EventCenter.GetInstance().AddEventListener("FoldPanelUnseleteOneCard", DoUnSelect);
+        
         remainCount = BattleSystem.Instance.Player.handsCard.Count - 3;
         UpdateDescriptionText();
         GetCardsFromHand();
@@ -50,14 +36,24 @@ public class FoldPanelUI : MonoBehaviour
 
     private void OnDisable()
     {
+        okBtn.onClick.RemoveListener(OkAction);
+        EventCenter.GetInstance().RemoveEventListener("FoldPanelSeleteOneCard", DoSelect);
+        EventCenter.GetInstance().RemoveEventListener("FoldPanelUnseleteOneCard", DoUnSelect);
         
         ReturnCardsToHand();
     }
-    
-    // public bool IsSeletedEnough()
-    // {
-    //     return remainCount <= 0;
-    // }
+
+    private void DoSelect()
+    {
+        remainCount--; 
+        UpdateDescriptionText();
+    }
+
+    private void DoUnSelect()
+    {
+        remainCount++;
+        UpdateDescriptionText();
+    }
 
     private void UpdateDescriptionText()
     {

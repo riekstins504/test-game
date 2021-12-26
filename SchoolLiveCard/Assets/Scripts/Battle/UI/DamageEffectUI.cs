@@ -11,11 +11,18 @@ public class DamageEffectUI : MonoBehaviour
     public RectTransform playerDamageTextPos;
     public RectTransform enemyDamageTextPos;
 
-    private void Awake()
+    private void OnEnable()
     {
         EventCenter.GetInstance().AddEventListener<HpChangeInfo>("PlayerTakenDamage", ShakeCamera);
         EventCenter.GetInstance().AddEventListener<HpChangeInfo>("PlayerTakenDamage", ShowPlayerDamageText);
         EventCenter.GetInstance().AddEventListener<HpChangeInfo>("EnemyTakenDamage", ShowEnemyDamageText);
+    }
+
+    private void OnDisable()
+    {
+        EventCenter.GetInstance().RemoveEventListener<HpChangeInfo>("PlayerTakenDamage", ShakeCamera);
+        EventCenter.GetInstance().RemoveEventListener<HpChangeInfo>("PlayerTakenDamage", ShowPlayerDamageText);
+        EventCenter.GetInstance().RemoveEventListener<HpChangeInfo>("EnemyTakenDamage", ShowEnemyDamageText);
     }
 
     private void ShowPlayerDamageText(HpChangeInfo info)

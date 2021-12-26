@@ -6,9 +6,15 @@ using DG.Tweening;
 
 public class EnemyMono : MonoBehaviour
 {
-    private void Awake()
+
+    private void OnEnable()
     {
         EventCenter.GetInstance().AddEventListener<HpChangeInfo>("EnemyTakenDamage", TakenAttackAnimation);
+    }
+
+    private void OnDisable()
+    {
+        EventCenter.GetInstance().RemoveEventListener<HpChangeInfo>("EnemyTakenDamage", TakenAttackAnimation);
     }
 
     private void TakenAttackAnimation(HpChangeInfo arg0)

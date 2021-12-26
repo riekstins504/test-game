@@ -13,12 +13,19 @@ public class EnemyBattleHUD : MonoBehaviour
     public ValueBarUI enemyHpBar;
     public ValueBarUI enemyMagicBar;
 
-    private void Awake()
+
+    private void OnEnable()
     {
         EventCenter.GetInstance().AddEventListener<EnemySO>("EnemyEnterBattle", InitEnemyHUD);
         EventCenter.GetInstance().AddEventListener<HpChangeInfo>("EnemyTakenDamage", SetEnemyHpUI);
     }
-    
+
+    private void OnDisable()
+    {
+        EventCenter.GetInstance().RemoveEventListener<EnemySO>("EnemyEnterBattle", InitEnemyHUD);
+        EventCenter.GetInstance().RemoveEventListener<HpChangeInfo>("EnemyTakenDamage", SetEnemyHpUI);
+    }
+
     private void InitEnemyHUD(EnemySO enemySo)
     {
         if (enemyHpBar != null)

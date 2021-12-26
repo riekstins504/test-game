@@ -11,16 +11,23 @@ public class PlayerBattleHUD : MonoBehaviour
     public ValueBarUI playerMagicBar;
     public Button endActionBtn;
 
-    private void Awake()
+    private void OnEnable()
     {
+        endActionBtn.onClick.AddListener(()=>
+        {
+            BattleSystem.Instance.EndPlayerAction();
+        });
         EventCenter.GetInstance().AddEventListener<PlayerSO>("PlayerEnterBattle", InitPlayerHUD);
         EventCenter.GetInstance().AddEventListener<HpChangeInfo>("PlayerTakenDamage", SetPlayerHpUI);
     }
 
-    private void Start()
+    private void OnDisable()
     {
-        endActionBtn.onClick.AddListener(BattleSystem.Instance.EndPlayerAction);
+        endActionBtn.onClick.RemoveListener(BattleSystem.Instance.EndPlayerAction);
+        EventCenter.GetInstance().RemoveEventListener<PlayerSO>("PlayerEnterBattle", InitPlayerHUD);
+        EventCenter.GetInstance().RemoveEventListener<HpChangeInfo>("PlayerTakenDamage", SetPlayerHpUI);
     }
+
 
     private void InitPlayerHUD(PlayerSO playerSo)
     {

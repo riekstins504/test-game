@@ -31,25 +31,13 @@ public class CharacterCardUI : MonoBehaviour,IPointerDownHandler
         rt = GetComponent<RectTransform>();
         originPos = rt.anchoredPosition;
         originColor = backgroundImage.color;
-        closeBtn.onClick.AddListener(() =>{ StartCoroutine(DoSkipAnimation()); });
 
         Debug.Log("CharacterUI start");
-        
-        
-        //从配置文件的Cache数组中加载之前的进度
-        // currentCharacter = GameManager.Instance.characterFlowConfig.LoadFromCache();
-        // //cacheIndex++;
-        // if (currentCharacter != null)
-        // {
-        //     rt.anchoredPosition += new Vector2(0, -Screen.height * 2f);
-        //     InitUI(currentCharacter);
-        //     yield return StartCoroutine(ComeBack());
-        // }
-        
     }
 
     private void OnEnable()
     {
+        closeBtn.onClick.AddListener(() =>{ StartCoroutine(DoSkipAnimation()); });
         communicateBtn.gameObject.SetActive(false);
         closeBtn.gameObject.SetActive(false);
         EventCenter.GetInstance().AddEventListener<CharacterCardUI>("CharacterCardSelected",SelectedAction);
@@ -57,6 +45,8 @@ public class CharacterCardUI : MonoBehaviour,IPointerDownHandler
 
     private void OnDisable()
     {
+        communicateBtn.onClick.RemoveAllListeners();
+        closeBtn.onClick.RemoveAllListeners();
         EventCenter.GetInstance().RemoveEventListener<CharacterCardUI>("CharacterCardSelected",SelectedAction);
     }
     
@@ -80,11 +70,23 @@ public class CharacterCardUI : MonoBehaviour,IPointerDownHandler
             characterName.text = enemySo.enemyName;
             introduction.text = enemySo.introduction;
             communicateBtn.GetComponentInChildren<Text>().text = "战斗";
+            communicateBtn.onClick.RemoveAllListeners();
             communicateBtn.onClick.AddListener(() =>
             {
-                GameManager.Instance.CurrentEnemyConfig = enemySo;
-                EventCenter.GetInstance().EventTrigger("LoadBattleField");
-                SceneManager.LoadScene("BattleScene");
+                EventCenter.GetInstance().EventTrigger<EnemySO>("EnterBattleField", enemySo);
+
+            });
+        }
+        else if(so is ShopSO)
+        {
+            ShopSO shopSO = so as ShopSO;
+            characterName.text = shopSO.shopName;
+            introduction.text = shopSO.introduction;
+            communicateBtn.GetComponentInChildren<Text>().text = "看看";
+            communicateBtn.onClick.RemoveAllListeners();
+            communicateBtn.onClick.AddListener(() =>
+            {
+                EventCenter.GetInstance().EventTrigger<ShopSO>("EnterShop", shopSO);
             });
         }
     }
@@ -154,7 +156,10 @@ public class CharacterCardUI : MonoBehaviour,IPointerDownHandler
         {
             backgroundImage.color = onSelectedColor;
             communicateBtn.gameObject.SetActive(true);
-            closeBtn.gameObject.SetActive(true);
+            if (!(CurrentCharacter is EnemySO))
+            {
+                closeBtn.gameObject.SetActive(true);
+            }
         }
         else
         {

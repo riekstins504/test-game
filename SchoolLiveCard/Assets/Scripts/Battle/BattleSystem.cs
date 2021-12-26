@@ -40,9 +40,9 @@ public class BattleSystem : MonoBehaviour
     public Enemy Enemy { get; private set; }
 
     public static BattleState currentState;
+    
     private bool isPlayerEndAction = false;
     private bool isEnemyEndAction = false;
-    
 
     private static BattleSystem _instance;
     public static BattleSystem Instance
@@ -53,21 +53,31 @@ public class BattleSystem : MonoBehaviour
     public static GameObject currentPlayerCard;
     public static GameObject currentEnemyCard;
 
-    private void Awake()
-    {
-        if (_instance == null)
-        {
-            _instance = this;
-        }
-        
-        EventCenter.GetInstance().AddEventListener("ExitBattleField", ExitBattleField);
-    }
-
     public void EndPlayerAction()
     {
         isPlayerEndAction = true;
     }
     
+    private void Awake()
+    {
+        if (_instance == null) 
+        {
+            _instance = this;
+        }
+        
+        
+    }
+
+    private void OnEnable()
+    {
+        EventCenter.GetInstance().AddEventListener("ExitBattleField", ExitBattleField);
+    }
+
+    private void OnDisable()
+    {
+        EventCenter.GetInstance().RemoveEventListener("ExitBattleField", ExitBattleField);
+    }
+
 
     private void Start()
     {
@@ -101,7 +111,6 @@ public class BattleSystem : MonoBehaviour
         {
             Player.SaveDataToSO();
         }
-        EventCenter.GetInstance().Clear();//THIS IS VERY IMPORTANT!!!
         SceneManager.LoadScene(0);
     }
 
