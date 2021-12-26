@@ -27,9 +27,18 @@ public class BattleUI : MonoBehaviour
     [Header("结算面板")] 
     public EndPanelUI endPanelUI;
 
-    private void Awake()
+    [Header("菜单面板")] 
+    public Button menuBtn;
+    public MenuPanelUI menuPanelUI;
+
+    private void OnEnable()
     {
-        
+        menuBtn.onClick.AddListener(()=>{menuPanelUI.gameObject.SetActive(true);});
+    }
+
+    private void OnDisable()
+    {
+        menuBtn.onClick.RemoveAllListeners();
     }
 
     public IEnumerator PlayerDrawCardAnimation(List<GameObject> cardObjs)

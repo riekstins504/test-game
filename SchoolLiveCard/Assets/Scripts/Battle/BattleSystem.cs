@@ -25,8 +25,10 @@ public enum BattleState
 public class BattleSystem : MonoBehaviour
 {
     //public GameObject playerPrefab;
-    [Header("配置")]
+    [Header("测试角色配置")]
+    [SerializeField]
     private PlayerSO playerConfig;
+    [SerializeField]
     private EnemySO enemyConfig;
     
     [Header("预制体")]
@@ -87,8 +89,12 @@ public class BattleSystem : MonoBehaviour
     
     private IEnumerator SetupBattleField()
     {
-        playerConfig = GameManager.Instance.PlayerConfig;
-        enemyConfig = GameManager.Instance.CurrentEnemyConfig;
+        if (GameManager.Instance != null)
+        {
+            playerConfig = GameManager.Instance.PlayerConfig;
+            enemyConfig = GameManager.Instance.CurrentEnemyConfig;           
+        }
+
         
         //实例化Player和Enemy
         Player = new Player(playerConfig);
